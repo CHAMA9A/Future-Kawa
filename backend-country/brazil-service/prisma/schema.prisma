@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LotStatus {
+  CONFORME
+  EN_ALERTE
+  PERIME
+}
+
+enum AlertType {
+  TEMPERATURE
+  HUMIDITY
+  EXPIRED_LOT
+}
+
+model CoffeeLot {
+  id            Int       @id @default(autoincrement())
+  lotCode       String    @unique
+  country       String    @default("Brazil")
+  warehouseName String
+  storageDate   DateTime
+  status        LotStatus @default(CONFORME)
+  createdAt     DateTime  @default(now())
+}
+
+model SensorMeasurement {
+  id            Int      @id @default(autoincrement())
+  warehouseName String
+  temperature   Float
+  humidity      Float
+  measuredAt    DateTime @default(now())
+}
+
+model Alert {
+  id        Int       @id @default(autoincrement())
+  type      AlertType
+  message   String
+  status    String    @default("NEW")
+  createdAt DateTime  @default(now())
+}
