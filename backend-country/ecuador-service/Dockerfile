@@ -25,6 +25,6 @@ COPY --from=build /app/prisma ./prisma
 # Régénère Prisma Client pour l'OS cible (debian-openssl-3.0.x)
 RUN npx prisma generate
 
-EXPOSE 3001
+EXPOSE 3011
 
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
