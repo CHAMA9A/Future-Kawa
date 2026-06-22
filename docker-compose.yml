@@ -1,6 +1,10 @@
 version: "3.8"
 
 services:
+  # ============================================
+  # BASES DE DONNÉES
+  # ============================================
+
   postgres-brazil:
     image: postgres:15-alpine
     container_name: postgres-brazil
@@ -18,6 +22,44 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres-ecuador:
+    image: postgres:15-alpine
+    container_name: postgres-ecuador
+    environment:
+      POSTGRES_USER: futurekawa
+      POSTGRES_PASSWORD: futurekawa123
+      POSTGRES_DB: futurekawa_ecuador
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-ecuador-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U futurekawa -d futurekawa_ecuador"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres-colombia:
+    image: postgres:15-alpine
+    container_name: postgres-colombia
+    environment:
+      POSTGRES_USER: futurekawa
+      POSTGRES_PASSWORD: futurekawa123
+      POSTGRES_DB: futurekawa_colombia
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-colombia-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U futurekawa -d futurekawa_colombia"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # BROKERS MQTT
+  # ============================================
+
   mosquitto-brazil:
     image: eclipse-mosquitto:2
     container_name: mosquitto-brazil
@@ -26,8 +68,34 @@ services:
       - "9001:9001"
     volumes:
       - ./mosquitto/config:/mosquitto/config
-      - mosquitto-data:/mosquitto/data
-      - mosquitto-log:/mosquitto/log
+      - mosquitto-brazil-data:/mosquitto/data
+      - mosquitto-brazil-log:/mosquitto/log
+
+  mosquitto-ecuador:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto-ecuador
+    ports:
+      - "1884:1883"
+      - "9002:9001"
+    volumes:
+      - ./mosquitto/config-ecuador:/mosquitto/config
+      - mosquitto-ecuador-data:/mosquitto/data
+      - mosquitto-ecuador-log:/mosquitto/log
+
+  mosquitto-colombia:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto-colombia
+    ports:
+      - "1885:1883"
+      - "9003:9001"
+    volumes:
+      - ./mosquitto/config-colombia:/mosquitto/config
+      - mosquitto-colombia-data:/mosquitto/data
+      - mosquitto-colombia-log:/mosquitto/log
+
+  # ============================================
+  # BACKENDS PAYS
+  # ============================================
 
   brazil-service:
     build:
@@ -36,6 +104,8 @@ services:
     container_name: brazil-service
     environment:
       DATABASE_URL: "postgresql://futurekawa:futurekawa123@postgres-brazil:5432/futurekawa_brazil"
+      MQTT_BROKER_URL: "mqtt://mosquitto-brazil:1883"
+      MQTT_TOPIC: "futurekawa/brazil/warehouse-1/measurements"
       PORT: 3001
     ports:
       - "3001:3001"
@@ -43,7 +113,66 @@ services:
       postgres-brazil:
         condition: service_healthy
 
+  ecuador-service:
+    build:
+      context: ./backend-country/ecuador-service
+      dockerfile: Dockerfile
+    container_name: ecuador-service
+    environment:
+      DATABASE_URL: "postgresql://futurekawa:futurekawa123@postgres-ecuador:5432/futurekawa_ecuador"
+      MQTT_BROKER_URL: "mqtt://mosquitto-ecuador:1883"
+      MQTT_TOPIC: "futurekawa/ecuador/warehouse-1/measurements"
+      PORT: 3011
+    ports:
+      - "3011:3011"
+    depends_on:
+      postgres-ecuador:
+        condition: service_healthy
+
+  colombia-service:
+    build:
+      context: ./backend-country/colombia-service
+      dockerfile: Dockerfile
+    container_name: colombia-service
+    environment:
+      DATABASE_URL: "postgresql://futurekawa:futurekawa123@postgres-colombia:5432/futurekawa_colombia"
+      MQTT_BROKER_URL: "mqtt://mosquitto-colombia:1883"
+      MQTT_TOPIC: "futurekawa/colombia/warehouse-1/measurements"
+      PORT: 3012
+    ports:
+      - "3012:3012"
+    depends_on:
+      postgres-colombia:
+        condition: service_healthy
+
+  # ============================================
+  # BACKEND CENTRAL (SIÈGE)
+  # ============================================
+
+  backend-central:
+    build:
+      context: ./backend-central
+      dockerfile: Dockerfile
+    container_name: backend-central
+    environment:
+      PORT: 3002
+      BRAZIL_SERVICE_URL: "http://brazil-service:3001"
+      ECUADOR_SERVICE_URL: "http://ecuador-service:3011"
+      COLOMBIA_SERVICE_URL: "http://colombia-service:3012"
+    ports:
+      - "3002:3002"
+    depends_on:
+      - brazil-service
+      - ecuador-service
+      - colombia-service
+
 volumes:
   postgres-brazil-data:
-  mosquitto-data:
-  mosquitto-log:
+  postgres-ecuador-data:
+  postgres-colombia-data:
+  mosquitto-brazil-data:
+  mosquitto-brazil-log:
+  mosquitto-ecuador-data:
+  mosquitto-ecuador-log:
+  mosquitto-colombia-data:
+  mosquitto-colombia-log:
