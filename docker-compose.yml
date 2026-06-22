@@ -166,6 +166,20 @@ services:
       - ecuador-service
       - colombia-service
 
+  # ============================================
+  # FRONTEND
+  # ============================================
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend-central
+
 volumes:
   postgres-brazil-data:
   postgres-ecuador-data:
