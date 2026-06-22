@@ -1,6 +1,5 @@
 node_modules/
 dist/
-.env
+# .env # Removed by Orchids to allow .env files
 *.log
 .prisma/
-.orchids/
