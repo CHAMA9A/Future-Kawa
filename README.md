@@ -82,6 +82,45 @@ Ils couvrent :
 - Backend central (routes d'agrégation)
 - Frontend (dashboard, sélection pays, données)
 
+## CI/CD with Jenkins
+
+Un pipeline Jenkins est configuré pour valider automatiquement le projet.
+
+### Jenkinsfile
+
+Le fichier [Jenkinsfile](Jenkinsfile) à la racine définit le pipeline complet.
+
+### Résumé des stages
+
+| Stage | Description |
+|---|---|
+| Checkout | Récupération du code depuis Git |
+| Environment Information | Affichage des versions (Node.js, npm, Docker) |
+| Install Dependencies | `npm ci` dans chaque service (parallèle) |
+| Generate Prisma Clients | `npx prisma generate` pour chaque backend pays (parallèle) |
+| Run Backend Tests | `npm test` dans les 4 backends (parallèle, `jest --runInBand`) |
+| Run Frontend Tests | `npm run test -- --run` (vitest) |
+| Build Frontend | `npm run build` (TypeScript + Vite) |
+| Validate Docker Compose | `docker compose config` |
+| Docker Build Check | `docker compose build` (optionnel, activable via `BUILD_DOCKER=true`) |
+
+### Commande principale des tests exécutée par le pipeline
+
+```bash
+# Backends pays
+npm --prefix backend-country/brazil-service test
+npm --prefix backend-country/ecuador-service test
+npm --prefix backend-country/colombia-service test
+npm --prefix backend-central test
+npm --prefix frontend run test -- --run
+```
+
+Tous les tests utilisent `jest --runInBand` pour éviter les problèmes mémoire.
+
+### Documentation complète
+
+➡️ [docs/jenkins-ci.md](docs/jenkins-ci.md)
+
 ## Projet
 
-Projet développé dans le cadre du programme FutureKawa — Étape 8 : Tests techniques et fonctionnels.
+Projet développé dans le cadre du programme FutureKawa — Étape 9 : Jenkins CI/CD.
