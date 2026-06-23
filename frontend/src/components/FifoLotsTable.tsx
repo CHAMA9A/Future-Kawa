@@ -7,7 +7,7 @@ interface Props {
 
 export default function FifoLotsTable({ lots }: Props) {
   if (lots.length === 0) {
-    return <div className="table-empty">Aucun lot FIFO</div>;
+    return <div className="table-empty">Aucune donnée disponible pour ce pays.</div>;
   }
 
   return (

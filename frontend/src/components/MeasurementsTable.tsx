@@ -7,7 +7,7 @@ interface Props {
 
 export default function MeasurementsTable({ measurements }: Props) {
   if (measurements.length === 0) {
-    return <div className="table-empty">Aucune mesure enregistrée</div>;
+    return <div className="table-empty">Aucune donnée disponible pour ce pays.</div>;
   }
 
   return (

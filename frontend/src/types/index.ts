@@ -31,9 +31,4 @@ export interface Alert {
   createdAt: string;
 }
 
-export interface DashboardData {
-  lots: Lot[];
-  fifoLots: Lot[];
-  measurements: Measurement[];
-  alerts: Alert[];
-}
+export type Section = 'dashboard' | 'lots' | 'measurements' | 'alerts';
