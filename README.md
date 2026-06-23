@@ -121,6 +121,63 @@ Tous les tests utilisent `jest --runInBand` pour éviter les problèmes mémoire
 
 ➡️ [docs/jenkins-ci.md](docs/jenkins-ci.md)
 
+## IoT Sensor Prototype
+
+Un prototype IoT basé sur **Arduino UNO + DHT11** permet la mesure en temps
+réel de la température et de l'humidité dans les entrepôts de stockage.
+
+### Caractéristiques
+
+- Capteur DHT11 (température 0–50°C, humidité 20–90%)
+- Pin data utilisée : D7
+- Communication série à 9600 bauds
+- Code embarqué dans `iot/arduino-dht11-sensor/futurekawa_dht11_serial.ino`
+
+### Contenu du dossier IoT
+
+```
+iot/arduino-dht11-sensor/
+├── futurekawa_dht11_serial.ino           # Code Arduino
+├── futurekawa_dht11_mqtt_bridge_template.md  # Passerelle série → MQTT
+├── README.md                             # Documentation du prototype
+├── installation-guide.md                 # Installation Arduino IDE
+├── wiring-diagram.md                     # Schéma de câblage
+├── libraries.md                          # Librairies requises
+├── mqtt-payload.md                       # Format des messages MQTT
+└── simulation-without-arduino.md         # Simulation MQTT sans carte
+```
+
+### Real-time Serial-to-MQTT integration
+
+La passerelle Serial-to-MQTT dans `serial-to-mqtt-bridge/` permet
+d'intégrer les mesures physiques du capteur DHT11 directement dans
+la chaîne applicative FutureKawa sans modifier le backend.
+
+Le PC lit les données série envoyées par l'Arduino UNO via USB
+puis les publie dans Mosquitto au format JSON attendu par les
+services pays.
+
+Documentation complète : [serial-to-mqtt-bridge/README.md](iot/arduino-dht11-sensor/serial-to-mqtt-bridge/README.md)
+
+### Limite actuelle
+
+L'Arduino UNO ne possède pas de module Wi-Fi intégré.
+Pour publier vers Mosquitto, une passerelle série est nécessaire
+(script PC Serial-to-MQTT, module ESP8266, ou remplacement par ESP32).
+
+### Simulation sans Arduino
+
+La chaîne MQTT complète peut être testée sans matériel :
+
+```powershell
+'{"warehouseName":"Warehouse Colombia 1","temperature":30,"humidity":85}' | docker exec -i mosquitto-colombia mosquitto_pub -h localhost -t futurekawa/colombia/warehouse-1/measurements -l
+```
+
+### Documentation
+
+- Documentation technique : [docs/iot-sensor.md](docs/iot-sensor.md)
+- Simulation : [iot/arduino-dht11-sensor/simulation-without-arduino.md](iot/arduino-dht11-sensor/simulation-without-arduino.md)
+
 ## Projet
 
 Projet développé dans le cadre du programme FutureKawa — Étape 9 : Jenkins CI/CD.

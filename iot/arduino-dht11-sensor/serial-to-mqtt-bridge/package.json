@@ -1,0 +1,16 @@
+{
+  "name": "futurekawa-serial-to-mqtt-bridge",
+  "version": "1.0.0",
+  "description": "Serial-to-MQTT bridge for FutureKawa Arduino DHT11 sensor",
+  "private": true,
+  "scripts": {
+    "start": "node serial-to-mqtt.js",
+    "test": "echo \"No tests for this bridge script\" && exit 0"
+  },
+  "dependencies": {
+    "serialport": "^12.0.0",
+    "@serialport/parser-readline": "^12.0.0",
+    "mqtt": "^5.15.1",
+    "dotenv": "^16.4.7"
+  }
+}
