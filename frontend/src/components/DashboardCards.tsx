@@ -6,7 +6,15 @@ interface Props {
   measurements: Measurement[];
   alerts: Alert[];
   countryName: string;
-  serviceStatus: string;
+  serviceOnline: boolean;
+}
+
+interface Card {
+  key: string;
+  title: string;
+  hint: string;
+  value: string | number;
+  accent: string;
 }
 
 export default function DashboardCards({
@@ -15,47 +23,63 @@ export default function DashboardCards({
   measurements,
   alerts,
   countryName,
-  serviceStatus,
+  serviceOnline,
 }: Props) {
-  const cards = [
+  const cards: Card[] = [
     {
-      title: 'Pays',
+      key: 'country',
+      title: 'Pays sélectionné',
+      hint: 'Zone de production',
       value: countryName,
-      color: 'var(--color-brown)',
+      accent: '#1565C0',
     },
     {
+      key: 'lots',
       title: 'Lots en stock',
+      hint: 'Total lots enregistrés',
       value: lots.length,
-      color: 'var(--color-green)',
+      accent: '#10B981',
     },
     {
-      title: 'Lots FIFO',
+      key: 'fifo',
+      title: 'Sortie FIFO',
+      hint: 'Lots à sortir en priorité',
       value: fifoLots.length,
-      color: 'var(--color-brown)',
+      accent: '#1565C0',
     },
     {
-      title: 'Mesures',
+      key: 'measures',
+      title: 'Mesures IoT',
+      hint: 'Relevés capteurs',
       value: measurements.length,
-      color: 'var(--color-blue)',
+      accent: '#6366F1',
     },
     {
-      title: 'Alertes',
+      key: 'alerts',
+      title: 'Alertes actives',
+      hint: 'Anomalies détectées',
       value: alerts.length,
-      color: alerts.length > 0 ? 'var(--color-red)' : 'var(--color-green)',
+      accent: alerts.length > 0 ? '#EF4444' : '#10B981',
     },
     {
+      key: 'status',
       title: 'Statut service',
-      value: serviceStatus === 'online' ? 'En ligne' : 'Hors ligne',
-      color: serviceStatus === 'online' ? 'var(--color-green)' : 'var(--color-red)',
+      hint: 'Connexion API',
+      value: serviceOnline ? 'En ligne' : 'Hors ligne',
+      accent: serviceOnline ? '#10B981' : '#EF4444',
     },
   ];
 
   return (
     <div className="dashboard-cards">
       {cards.map((card) => (
-        <div key={card.title} className="dashboard-card" style={{ borderTopColor: card.color }}>
-          <span className="card-title">{card.title}</span>
-          <span className="card-value">{card.value}</span>
+        <div key={card.key} className="dashboard-card">
+          <div className="card-dot" style={{ background: card.accent }} />
+          <div className="card-body">
+            <span className="card-title">{card.title}</span>
+            <span className="card-value">{card.value}</span>
+            <span className="card-hint">{card.hint}</span>
+          </div>
         </div>
       ))}
     </div>

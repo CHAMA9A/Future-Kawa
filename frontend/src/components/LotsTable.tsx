@@ -7,7 +7,7 @@ interface Props {
 
 export default function LotsTable({ lots }: Props) {
   if (lots.length === 0) {
-    return <div className="table-empty">Aucun lot enregistré</div>;
+    return <div className="table-empty">Aucune donnée disponible pour ce pays.</div>;
   }
 
   return (
