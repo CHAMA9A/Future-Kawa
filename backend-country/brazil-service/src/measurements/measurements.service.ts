@@ -1,14 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateMeasurementDto } from './dto/create-measurement.dto';
-
-/**
- * Seuils de tolérance pour le Brésil
- */
-const BRAZIL_THRESHOLDS = {
-  temperature: { min: 26, max: 32 }, // 29°C ± 3°C
-  humidity: { min: 53, max: 57 },     // 55% ± 2%
-};
+import { getAlertThresholds } from '../config/alert-thresholds';
 
 /**
  * MeasurementsService
@@ -54,23 +47,25 @@ export class MeasurementsService {
     temperature: number,
     humidity: number,
   ) {
+    const thresholds = getAlertThresholds();
+
     if (
-      temperature < BRAZIL_THRESHOLDS.temperature.min ||
-      temperature > BRAZIL_THRESHOLDS.temperature.max
+      temperature < thresholds.temperature.min ||
+      temperature > thresholds.temperature.max
     ) {
       await this.createAlert(
         'TEMPERATURE',
-        `Température hors seuil dans ${warehouseName} : ${temperature}°C (plage acceptable : ${BRAZIL_THRESHOLDS.temperature.min}°C - ${BRAZIL_THRESHOLDS.temperature.max}°C)`,
+        `Température hors seuil dans ${warehouseName} : ${temperature}°C (plage acceptable : ${thresholds.temperature.min}°C - ${thresholds.temperature.max}°C)`,
       );
     }
 
     if (
-      humidity < BRAZIL_THRESHOLDS.humidity.min ||
-      humidity > BRAZIL_THRESHOLDS.humidity.max
+      humidity < thresholds.humidity.min ||
+      humidity > thresholds.humidity.max
     ) {
       await this.createAlert(
         'HUMIDITY',
-        `Humidité hors seuil dans ${warehouseName} : ${humidity}% (plage acceptable : ${BRAZIL_THRESHOLDS.humidity.min}% - ${BRAZIL_THRESHOLDS.humidity.max}%)`,
+        `Humidité hors seuil dans ${warehouseName} : ${humidity}% (plage acceptable : ${thresholds.humidity.min}% - ${thresholds.humidity.max}%)`,
       );
     }
   }

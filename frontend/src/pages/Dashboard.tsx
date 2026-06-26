@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { Country, Lot, Measurement, Alert, Section } from '../types';
-import { fetchCountries, fetchAllDashboardData } from '../api/centralApi';
+import type { Country, Lot, Measurement, Alert, AlertThresholds, Section } from '../types';
+import { fetchCountries, fetchAllDashboardData, getThresholds } from '../api/centralApi';
 import Navbar from '../components/Navbar';
 import HeroSection from '../components/HeroSection';
 import CountryOverview from '../components/CountryOverview';
@@ -11,6 +11,7 @@ import MeasurementsTable from '../components/MeasurementsTable';
 import AlertsTable from '../components/AlertsTable';
 import MeasurementsChart from '../components/MeasurementsChart';
 import AlertsChart from '../components/AlertsChart';
+import ThresholdSettings from '../components/ThresholdSettings';
 
 export default function Dashboard() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -19,6 +20,7 @@ export default function Dashboard() {
   const [fifoLots, setFifoLots] = useState<Lot[]>([]);
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [thresholds, setThresholds] = useState<AlertThresholds | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<Section>('dashboard');
@@ -48,12 +50,16 @@ export default function Dashboard() {
     if (!selectedCountry) return;
     setLoading(true);
     setError(null);
-    fetchAllDashboardData(selectedCountry)
-      .then((result) => {
-        setLots(result.lots);
-        setFifoLots(result.fifoLots);
-        setMeasurements(result.measurements);
-        setAlerts(result.alerts);
+    Promise.all([
+      fetchAllDashboardData(selectedCountry),
+      getThresholds(selectedCountry),
+    ])
+      .then(([data, thresholdData]) => {
+        setLots(data.lots);
+        setFifoLots(data.fifoLots);
+        setMeasurements(data.measurements);
+        setAlerts(data.alerts);
+        setThresholds(thresholdData);
         setLoading(false);
       })
       .catch(() => {
@@ -61,6 +67,10 @@ export default function Dashboard() {
         setLoading(false);
       });
   }, [selectedCountry]);
+
+  const handleThresholdsChange = useCallback((newThresholds: AlertThresholds) => {
+    setThresholds(newThresholds);
+  }, []);
 
   const handleNavigate = useCallback((section: Section) => {
     setActiveSection(section);
@@ -113,6 +123,11 @@ export default function Dashboard() {
                 country={currentCountry}
                 measurements={measurements}
                 alerts={alerts}
+                thresholds={thresholds}
+              />
+              <ThresholdSettings
+                country={selectedCountry}
+                onThresholdsChange={handleThresholdsChange}
               />
               <div className="charts-grid">
                 <section className="data-section">

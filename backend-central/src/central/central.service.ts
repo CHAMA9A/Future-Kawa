@@ -86,7 +86,28 @@ export class CentralService {
   }
 
   /**
-   * Méthode générique pour interroger un backend pays via HTTP.
+   * Retourne les seuils d'alertes d'un pays.
+   */
+  async getThresholds(country: string) {
+    return this.fetchFromCountry(country, '/api/thresholds');
+  }
+
+  /**
+   * Met à jour les seuils d'alertes d'un pays.
+   */
+  async updateThresholds(country: string, thresholds: any) {
+    return this.sendToCountry(country, '/api/thresholds', 'PUT', thresholds);
+  }
+
+  /**
+   * Réinitialise les seuils d'alertes d'un pays.
+   */
+  async resetThresholds(country: string) {
+    return this.sendToCountry(country, '/api/thresholds/reset', 'POST', null);
+  }
+
+  /**
+   * Méthode générique pour interroger un backend pays via HTTP GET.
    * Valide d'abord que le pays existe, puis effectue l'appel.
    * Retourne une erreur structurée si le service est indisponible.
    */
@@ -109,6 +130,47 @@ export class CentralService {
       this.logger.error(
         `Erreur lors de l'appel au backend ${config.name} : GET ${url} - service indisponible`,
       );
+      return {
+        country: config.code,
+        status: 'unavailable',
+        message: 'Country service is unavailable',
+      };
+    }
+  }
+
+  /**
+   * Méthode générique pour envoyer des données à un backend pays via HTTP PUT/POST.
+   */
+  private async sendToCountry(country: string, path: string, method: 'PUT' | 'POST', body: any) {
+    const config = this.countries[country];
+
+    if (!config) {
+      throw new NotFoundException(
+        `Country "${country}" not found. Available: ${Object.keys(this.countries).join(', ')}`,
+      );
+    }
+
+    const url = `${config.serviceUrl}${path}`;
+    this.logger.log(`Appel au backend ${config.name} : ${method} ${url}`);
+
+    try {
+      let response;
+      if (method === 'PUT') {
+        response = await firstValueFrom(this.httpService.put(url, body));
+      } else {
+        response = await firstValueFrom(this.httpService.post(url, body));
+      }
+      return response.data;
+    } catch (error: any) {
+      this.logger.error(
+        `Erreur lors de l'appel au backend ${config.name} : ${method} ${url} - ${error.message}`,
+      );
+      if (error.response) {
+        return {
+          statusCode: error.response.status,
+          message: error.response.data?.message || 'Country service error',
+        };
+      }
       return {
         country: config.code,
         status: 'unavailable',

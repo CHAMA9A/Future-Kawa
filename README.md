@@ -178,6 +178,30 @@ La chaîne MQTT complète peut être testée sans matériel :
 - Documentation technique : [docs/iot-sensor.md](docs/iot-sensor.md)
 - Simulation : [iot/arduino-dht11-sensor/simulation-without-arduino.md](iot/arduino-dht11-sensor/simulation-without-arduino.md)
 
+## Technical Documentation
+
+| Document | Description |
+|---|---|
+| [Architecture](docs/architecture.md) | Architecture microservices, flux de données, ports et rôles |
+| [Base de données](docs/database.md) | Modèles PostgreSQL, Prisma ORM, enums, règles FIFO et péremption |
+| [MQTT / IoT](docs/mqtt-documentation.md) | Protocole MQTT, Mosquitto, topics, simulation et Arduino |
+| [Frontend](docs/frontend.md) | Dashboard React, composants, communication API |
+| [Docker / Déploiement](docs/docker-deployment.md) | Docker Compose, conteneurs, ports, volumes et troubleshooting |
+| [Tests](docs/testing.md) | Stratégie de tests, commandes d'exécution |
+| [API / Swagger](docs/api-documentation.md) | Documentation Swagger, routes et endpoints |
+| [Choix techniques](docs/technical-choices.md) | Justification des technologies et perspectives d'évolution |
+| [Seuils d'alerte](docs/alert-thresholds.md) | Configuration et modification des seuils d'alertes par pays |
+| [Intégration ERP](docs/erp-integration.md) | Intégration de FutureKawa dans un ERP ou système d'information existant |
+
+## User and Project Documentation
+
+| Document | Description |
+|---|---|
+| [Guide utilisateur](docs/user-guide.md) | Prise en main de l'application, navigation dans le dashboard, dépannage simple |
+| [Questionnaire phase 2](docs/phase-2-questionnaire.md) | Questionnaire de préparation à l'évolution du projet |
+| [Schéma d'automatisation](docs/automation-schema.md) | Vision future de l'automatisation des actionneurs et de la régulation |
+| [Accompagnement au changement](docs/change-management.md) | Stratégie de déploiement, formation et adoption par les utilisateurs |
+
 ## Projet
 
 Projet développé dans le cadre du programme FutureKawa — Étape 9 : Jenkins CI/CD.

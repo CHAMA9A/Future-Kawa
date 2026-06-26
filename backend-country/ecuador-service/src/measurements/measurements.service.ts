@@ -1,14 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateMeasurementDto } from './dto/create-measurement.dto';
-
-/**
- * Seuils de tolérance pour l'Équateur
- */
-const ECUADOR_THRESHOLDS = {
-  temperature: { min: 28, max: 34 }, // 31°C ± 3°C
-  humidity: { min: 58, max: 62 },     // 60% ± 2%
-};
+import { getAlertThresholds } from '../config/alert-thresholds';
 
 /**
  * MeasurementsService
@@ -54,23 +47,25 @@ export class MeasurementsService {
     temperature: number,
     humidity: number,
   ) {
+    const thresholds = getAlertThresholds();
+
     if (
-      temperature < ECUADOR_THRESHOLDS.temperature.min ||
-      temperature > ECUADOR_THRESHOLDS.temperature.max
+      temperature < thresholds.temperature.min ||
+      temperature > thresholds.temperature.max
     ) {
       await this.createAlert(
         'TEMPERATURE',
-        `Température hors seuil dans ${warehouseName} : ${temperature}°C (plage acceptable : ${ECUADOR_THRESHOLDS.temperature.min}°C - ${ECUADOR_THRESHOLDS.temperature.max}°C)`,
+        `Température hors seuil dans ${warehouseName} : ${temperature}°C (plage acceptable : ${thresholds.temperature.min}°C - ${thresholds.temperature.max}°C)`,
       );
     }
 
     if (
-      humidity < ECUADOR_THRESHOLDS.humidity.min ||
-      humidity > ECUADOR_THRESHOLDS.humidity.max
+      humidity < thresholds.humidity.min ||
+      humidity > thresholds.humidity.max
     ) {
       await this.createAlert(
         'HUMIDITY',
-        `Humidité hors seuil dans ${warehouseName} : ${humidity}% (plage acceptable : ${ECUADOR_THRESHOLDS.humidity.min}% - ${ECUADOR_THRESHOLDS.humidity.max}%)`,
+        `Humidité hors seuil dans ${warehouseName} : ${humidity}% (plage acceptable : ${thresholds.humidity.min}% - ${thresholds.humidity.max}%)`,
       );
     }
   }

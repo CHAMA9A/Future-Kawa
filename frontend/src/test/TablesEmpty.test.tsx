@@ -55,7 +55,7 @@ describe('MeasurementsTable with empty data', () => {
 describe('AlertsTable with empty data', () => {
   it('shows empty message when no alerts', () => {
     render(<AlertsTable alerts={[]} />);
-    expect(screen.getByText('Aucune donnée disponible pour ce pays.')).toBeInTheDocument();
+    expect(screen.getByText('Aucune alerte disponible pour ce pays.')).toBeInTheDocument();
   });
 
   it('renders alert cards when alerts are provided', () => {

@@ -1,14 +1,14 @@
 import type { Alert } from '../types';
-import { formatDate } from '../utils';
+import { formatDate, statusBadge } from '../utils';
 
 interface Props {
   alerts: Alert[];
 }
 
-const alertStyles: Record<string, { label: string }> = {
-  TEMPERATURE: { label: 'Température' },
-  HUMIDITY: { label: 'Humidité' },
-  EXPIRED_LOT: { label: 'Lot périmé' },
+const alertTypeLabels: Record<string, string> = {
+  TEMPERATURE: 'Température',
+  HUMIDITY: 'Humidité',
+  EXPIRED_LOT: 'Lot périmé',
 };
 
 const severity: Record<string, number> = {
@@ -19,7 +19,7 @@ const severity: Record<string, number> = {
 
 export default function AlertsTable({ alerts }: Props) {
   if (alerts.length === 0) {
-    return <div className="table-empty">Aucune donnée disponible pour ce pays.</div>;
+    return <div className="table-empty">Aucune alerte disponible pour ce pays.</div>;
   }
 
   const sorted = [...alerts].sort((a, b) => {
@@ -29,22 +29,33 @@ export default function AlertsTable({ alerts }: Props) {
   });
 
   return (
-    <div className="alerts-list">
-      {sorted.map((alert, i) => {
-        const al = alertStyles[alert.type] ?? { label: alert.type };
-        return (
-          <div key={alert.id} className={`alert-card alert-${alert.type.toLowerCase()}`}>
-            <div className="alert-card-header">
-              <span className="alert-card-index">#{i + 1}</span>
-              <span className="alert-card-type">{al.label}</span>
-              <span className="alert-card-date">{formatDate(alert.createdAt)}</span>
-              <button className="alert-card-close">&times;</button>
-            </div>
-            <p className="alert-card-message">{alert.message}</p>
-            <span className="alert-card-status">{alert.status}</span>
-          </div>
-        );
-      })}
+    <div className="table-wrapper">
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Message</th>
+            <th>Statut</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sorted.map((alert) => (
+            <tr key={alert.id}>
+              <td>{alert.id}</td>
+              <td>
+                <span className={`badge badge-${alert.type.toLowerCase()}`}>
+                  {alertTypeLabels[alert.type] ?? alert.type}
+                </span>
+              </td>
+              <td className="alert-message-cell">{alert.message}</td>
+              <td>{statusBadge(alert.status)}</td>
+              <td>{formatDate(alert.createdAt)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

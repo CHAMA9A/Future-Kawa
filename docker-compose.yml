@@ -158,6 +158,8 @@ services:
       BRAZIL_SERVICE_URL: "http://brazil-service:3001"
       ECUADOR_SERVICE_URL: "http://ecuador-service:3011"
       COLOMBIA_SERVICE_URL: "http://colombia-service:3012"
+      MAILHOG_HOST: "mailhog"
+      MAILHOG_PORT: "1025"
     ports:
       - "3002:3002"
     depends_on:
@@ -178,6 +180,17 @@ services:
       - "5173:5173"
     depends_on:
       - backend-central
+
+  # ============================================
+  # MAILHOG (Email test SMTP)
+  # ============================================
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Interface web
 
 volumes:
   postgres-brazil-data:

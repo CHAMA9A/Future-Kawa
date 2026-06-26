@@ -204,6 +204,19 @@ détails.
                     └──────────────────┘
 ```
 
+## Seuils d'alerte — Colombie (démonstration IoT réelle)
+
+Les seuils d'alerte du service Colombia ont été temporairement adaptés pour la démonstration locale du prototype IoT réel (Arduino UNO + DHT11) :
+
+| Mesure | Plage acceptable |
+|---|---|
+| Température | 30°C – 36°C |
+| Humidité | 30% – 45% |
+
+Les valeurs réelles observées dans la pièce de démonstration (≈34°C, ≈38%) sont désormais considérées comme normales.
+
+> **Note** : Ces seuils Colombia sont adaptés pour la démonstration locale du prototype IoT réel. Dans un contexte métier réel, les seuils peuvent être reconfigurés selon les conditions de stockage attendues.
+
 ## Documentation connexe
 
 - [Prototype IoT](iot/arduino-dht11-sensor/README.md)

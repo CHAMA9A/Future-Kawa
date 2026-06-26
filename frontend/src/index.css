@@ -740,3 +740,122 @@ body {
   .dashboard-cards { grid-template-columns: 1fr; }
   .hero-stats { flex-direction: column; gap: 12px; }
 }
+
+/* =============================================
+   THRESHOLD SETTINGS
+   ============================================= */
+
+.threshold-settings {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.threshold-settings h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--brand-brown-dark);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--brand-green-bg);
+}
+
+.threshold-loading {
+  color: var(--text-light);
+  font-size: 14px;
+  padding: 12px 0;
+}
+
+.threshold-error {
+  background: var(--danger-bg);
+  color: var(--danger);
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.threshold-success {
+  background: var(--success-bg);
+  color: var(--success);
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.threshold-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.threshold-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.threshold-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.threshold-input {
+  padding: 10px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg-card);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.threshold-input:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 3px var(--brand-green-bg);
+}
+
+.threshold-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.threshold-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.threshold-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.threshold-btn-save {
+  background: var(--brand-green);
+  color: #fff;
+}
+
+.threshold-btn-save:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.threshold-btn-reset {
+  background: var(--brand-brown-lighter);
+  color: var(--brand-brown-dark);
+}
+
+.threshold-btn-reset:hover:not(:disabled) {
+  opacity: 0.8;
+}

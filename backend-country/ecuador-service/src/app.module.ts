@@ -4,6 +4,7 @@ import { LotsModule } from './lots/lots.module';
 import { MeasurementsModule } from './measurements/measurements.module';
 import { AlertsModule } from './alerts/alerts.module';
 import { MqttModule } from './mqtt/mqtt.module';
+import { ThresholdsModule } from './thresholds/thresholds.module';
 
 /**
  * AppModule
@@ -15,6 +16,7 @@ import { MqttModule } from './mqtt/mqtt.module';
  * - MeasurementsModule : gestion des mesures IoT
  * - AlertsModule : gestion des alertes
  * - MqttModule : intégration MQTT (réception des mesures IoT)
+ * - ThresholdsModule : gestion des seuils d'alertes
  */
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { MqttModule } from './mqtt/mqtt.module';
     MeasurementsModule,
     AlertsModule,
     MqttModule,
+    ThresholdsModule,
   ],
 })
 export class AppModule {}

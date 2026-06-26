@@ -101,8 +101,10 @@ Le service MQTT se connecte automatiquement au démarrage du backend. Il écoute
 
 | Mesure | Idéal | Tolérance | Plage acceptable |
 |---|---|---|---|
-| Température | 26°C | ±3°C | 23°C – 29°C |
-| Humidité | 80% | ±2% | 78% – 82% |
+| Température | 33°C | ±3°C | 30°C – 36°C |
+| Humidité | 37,5% | ±7,5% | 30% – 45% |
+
+> **Note** : Ces seuils sont adaptés pour la démonstration locale du prototype IoT réel (Arduino UNO + DHT11). Les valeurs réelles observées sont d'environ 34°C et 38%. Dans un contexte métier réel, les seuils peuvent être reconfigurés selon les conditions de stockage attendues.
 
 ### Tester avec curl
 

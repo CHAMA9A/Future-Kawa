@@ -36,8 +36,8 @@ describe('MeasurementsService (Colombia)', () => {
     it('should create a measurement within normal thresholds (no alert)', async () => {
       const dto = {
         warehouseName: 'Warehouse Colombia 1',
-        temperature: 26,
-        humidity: 80,
+        temperature: 33,
+        humidity: 38,
       };
 
       mockPrisma.sensorMeasurement.create.mockResolvedValue({
@@ -47,7 +47,7 @@ describe('MeasurementsService (Colombia)', () => {
       const result = await service.create(dto);
 
       expect(mockPrisma.sensorMeasurement.create).toHaveBeenCalledWith({
-        data: { warehouseName: 'Warehouse Colombia 1', temperature: 26, humidity: 80 },
+        data: { warehouseName: 'Warehouse Colombia 1', temperature: 33, humidity: 38 },
       });
       expect(mockPrisma.alert.create).not.toHaveBeenCalled();
       expect(result).toBeDefined();
@@ -56,8 +56,8 @@ describe('MeasurementsService (Colombia)', () => {
     it('should create an alert when temperature is out of range', async () => {
       const dto = {
         warehouseName: 'Warehouse Colombia 1',
-        temperature: 35,
-        humidity: 80,
+        temperature: 40,
+        humidity: 38,
       };
 
       mockPrisma.sensorMeasurement.create.mockResolvedValue({
@@ -77,8 +77,8 @@ describe('MeasurementsService (Colombia)', () => {
     it('should create an alert when humidity is out of range', async () => {
       const dto = {
         warehouseName: 'Warehouse Colombia 1',
-        temperature: 26,
-        humidity: 95,
+        temperature: 33,
+        humidity: 50,
       };
 
       mockPrisma.sensorMeasurement.create.mockResolvedValue({
@@ -99,8 +99,8 @@ describe('MeasurementsService (Colombia)', () => {
   describe('findAll', () => {
     it('should return all measurements', async () => {
       const measurements = [
-        { id: 2, warehouseName: 'Warehouse Colombia 1', temperature: 27, humidity: 80, measuredAt: new Date() },
-        { id: 1, warehouseName: 'Warehouse Colombia 1', temperature: 26, humidity: 79, measuredAt: new Date() },
+        { id: 2, warehouseName: 'Warehouse Colombia 1', temperature: 33, humidity: 38, measuredAt: new Date() },
+        { id: 1, warehouseName: 'Warehouse Colombia 1', temperature: 32, humidity: 37, measuredAt: new Date() },
       ];
 
       mockPrisma.sensorMeasurement.findMany.mockResolvedValue(measurements);
@@ -116,7 +116,7 @@ describe('MeasurementsService (Colombia)', () => {
   describe('findByWarehouse', () => {
     it('should return measurements filtered by warehouse', async () => {
       const measurements = [
-        { id: 1, warehouseName: 'Warehouse Colombia 1', temperature: 26, humidity: 80, measuredAt: new Date() },
+        { id: 1, warehouseName: 'Warehouse Colombia 1', temperature: 33, humidity: 38, measuredAt: new Date() },
       ];
 
       mockPrisma.sensorMeasurement.findMany.mockResolvedValue(measurements);

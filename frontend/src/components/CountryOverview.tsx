@@ -1,21 +1,15 @@
-import type { Country, Measurement, Alert } from '../types';
+import type { Country, Measurement, Alert, AlertThresholds } from '../types';
 
 interface Props {
   country: Country | undefined;
   measurements: Measurement[];
   alerts: Alert[];
+  thresholds: AlertThresholds | null;
 }
 
-const thresholds: Record<string, { tempMin: number; tempMax: number; humMin: number; humMax: number }> = {
-  brazil: { tempMin: 26, tempMax: 32, humMin: 53, humMax: 57 },
-  ecuador: { tempMin: 28, tempMax: 34, humMin: 58, humMax: 62 },
-  colombia: { tempMin: 23, tempMax: 29, humMin: 78, humMax: 82 },
-};
-
-export default function CountryOverview({ country, measurements, alerts }: Props) {
+export default function CountryOverview({ country, measurements, alerts, thresholds }: Props) {
   if (!country) return null;
 
-  const t = thresholds[country.code] ?? { tempMin: 20, tempMax: 30, humMin: 40, humMax: 60 };
   const lastMeasurement = measurements.length > 0 ? measurements[measurements.length - 1] : null;
   const lastMeasurementTime = lastMeasurement
     ? new Date(lastMeasurement.measuredAt).toLocaleString('fr-FR')
@@ -33,11 +27,15 @@ export default function CountryOverview({ country, measurements, alerts }: Props
         </div>
         <div className="country-overview-item">
           <span className="co-label">Température acceptable</span>
-          <span className="co-value">{t.tempMin}°C - {t.tempMax}°C</span>
+          <span className="co-value">
+            {thresholds ? `${thresholds.temperature.min}°C - ${thresholds.temperature.max}°C` : '...'}
+          </span>
         </div>
         <div className="country-overview-item">
           <span className="co-label">Humidité acceptable</span>
-          <span className="co-value">{t.humMin}% - {t.humMax}%</span>
+          <span className="co-value">
+            {thresholds ? `${thresholds.humidity.min}% - ${thresholds.humidity.max}%` : '...'}
+          </span>
         </div>
         <div className="country-overview-item">
           <span className="co-label">Alertes actives</span>

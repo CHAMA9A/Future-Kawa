@@ -32,3 +32,14 @@ export interface Alert {
 }
 
 export type Section = 'dashboard' | 'lots' | 'measurements' | 'alerts';
+
+export type AlertThresholds = {
+  temperature: {
+    min: number;
+    max: number;
+  };
+  humidity: {
+    min: number;
+    max: number;
+  };
+};

@@ -1,7 +1,0 @@
-{
-  "startupCommands": [
-    "cd frontend && npm install; npx vite --host 0.0.0.0 --port 5173"
-  ],
-  "projectId": "cfef7401-4a9e-4058-8477-feede46b1e52",
-  "templateId": "any"
-}
